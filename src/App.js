@@ -10,6 +10,7 @@ import { RegisterPage } from './containers/RegisterPage';
 import { LoginPage } from './containers/LoginPage';
 import { CreateArticle } from './containers/CreatArticle';
 import { ArticlePage } from './containers/ArticlePage';
+import { ProfilePage } from './containers/ProfilePage';
 
 import { userActions } from './actions';
 
@@ -67,7 +68,7 @@ class App extends React.Component {
             <PrivateRoute exact path="/edit/article/:slug" component={CreateArticle} />
             <PrivateRoute exact path="/article/:slug" component={ArticlePage} />
 
-            {/* <Route path="/login" component={LoginPage} /> */}
+            <PrivateRoute path="/profile/:username" component={ProfilePage} />
             {/* <Route path="/register" component={RegisterPage} /> */}
             {/* <Redirect from="*" to="/" /> */}
           </Switch>
