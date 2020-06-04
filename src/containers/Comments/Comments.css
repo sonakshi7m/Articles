@@ -1,0 +1,53 @@
+.comment {
+    margin: auto;
+    width: 60%;
+}
+.comment .card{
+        border: 1px solid #e5e5e5;
+        box-shadow: none;
+        margin-top: 2rem;
+}
+ .comment .card .card-block {
+    padding: 1.25rem;
+    text-align: left;
+ }
+
+ .comment .card .card-footer {
+    border-top: 1px solid #e5e5e5;
+    box-shadow: none;
+    font-size: .8rem;
+    font-weight: 300;
+    text-align: left;
+ }
+
+ .comment .card .comment-author {
+    display: inline-block;
+    vertical-align: middle;
+ }
+
+ .comment .card .comment-author-img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    border-radius: 30px;
+ }
+
+ .comment .card .date-posted {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+    color: #bbb;
+ }
+
+ .comment .card .mod-options {
+    float: right;
+    color: #333;
+    font-size: 1rem;
+}
+
+.comment .card .mod-options i {
+    margin-left: 5px;
+    opacity: .6;
+    cursor: pointer;
+}

@@ -1,0 +1,36 @@
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+  }
+  
+  .right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+  }
+  
+  .left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+  }
+
+.page-link {
+    height: 42px;
+    width: 42px;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 11px rgba(132, 135, 138, 0.16);
+    padding:0;
+    color: rgba(0, 0, 0, 0.2);
+}
+.page-link:active {
+    background: #fff;
+    color: black;
+}
+.page-item i {
+    position: relative;
+    top: 13px;   
+}
+.pagination-number{
+    color: black;
+}

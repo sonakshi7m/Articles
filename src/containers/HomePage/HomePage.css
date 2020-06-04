@@ -1,0 +1,38 @@
+.container {
+    padding: 2rem;
+}
+
+.feeds {
+    border: 1px solid #ccc;
+    margin-right: 2rem;
+}
+
+.feeds h6 {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+
+
+/* .page-item{
+    .page-link{
+        height: 42px;
+        width: 42px;
+        border-radius: 50% !important;
+        box-shadow: 0 2px 11px rgba(132, 135, 138, 0.16);
+        padding:0;
+        color: rgba(0, 0, 0, 0.2);
+    }
+    &.active{
+        .page-link{
+            background: $white;
+            color: $thick-black;
+        }
+    }
+    i{
+        position: relative;
+        top: 13px;
+    }
+} */
+

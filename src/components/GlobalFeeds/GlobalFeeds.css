@@ -1,0 +1,45 @@
+.container-article {
+    border-top: 1px solid rgba(0,0,0,.1);
+    padding: 1.5rem 0;
+    text-align: left;
+}
+
+.container-article h3:hover {
+    cursor: pointer;
+}
+
+.article-meta {
+    display: block;
+    position: relative;
+    font-weight: 300;
+    padding-bottom: 1rem;
+}
+
+.article-meta img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 32px;
+    width: 32px;
+    border-radius: 30px;
+}
+
+.article-meta .info {
+    margin: 0 1.5rem 0 .3rem;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1rem;
+}
+article-meta .info .author {
+    display: block;
+    font-weight: 500!important;
+}
+
+.article-meta .info .author:hover {
+    cursor: pointer;
+}
+
+.article-meta .info .date {
+    color: #bbb;
+    font-size: .8rem;
+    display: block;
+}

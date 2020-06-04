@@ -1,0 +1,66 @@
+.banner {
+    color: #fff;
+    background: #333;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.container {
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.deletebtn {
+    margin-right: 1rem;
+}
+
+.article-meta {
+    display: block;
+    position: relative;
+    font-weight: 300;
+    padding-bottom: 1rem;
+}
+
+.article-meta img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 32px;
+    width: 32px;
+    border-radius: 30px;
+}
+
+.article-meta .info {
+    margin: 0 1.5rem 0 .3rem;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1rem;
+}
+article-meta .info .author {
+    display: block;
+    font-weight: 500!important;
+}
+
+.article-meta .info .author:hover {
+    cursor: pointer;
+}
+
+.article-meta .info .date {
+    color: #bbb;
+    font-size: .8rem;
+    display: block;
+}
+
+.article-meta button{
+    margin-right: 2rem;
+    width: 200px;
+}
+
+.comment {
+    margin: auto;
+    width: 60%;
+}
+
+textarea.form-control {
+    height: 200px;
+}

@@ -1,26 +1,91 @@
 import React from 'react';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+import { Router, Route, Switch } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { PrivateRoute } from './components/PrivateRoute';
+import { HomePage } from './containers/HomePage';
+import { history } from './helpers';
+import { Header } from './components/Header';
+import { RegisterPage } from './containers/RegisterPage';
+import { LoginPage } from './containers/LoginPage';
+import { CreateArticle } from './containers/CreatArticle';
+import { ArticlePage } from './containers/ArticlePage';
+
+import { userActions } from './actions';
+
+import { ToastContainer } from 'react-toastify';
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      this.isLoggedin = true;
+      this.props.setLoginUser(user);
+    }
+
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.logoutUser = this.logoutUser.bind(this);
+  }
+
+  logoutUser() {
+    localStorage.removeItem("user");
+    this.props.logout(() => { history.push('/') });
+
+  }
+
+  render() {
+
+    const { user } = this.props;
+    if (user) {
+      this.isLoggedin = true;
+
+    }
+
+    return (
+      <Router history={history}>
+        <div className="App">
+          <ToastContainer
+            autoClose={5000}
+
+          />
+          <Header isLoggedin={this.isLoggedin} user={user} logout={this.logoutUser} />
+
+          <Switch>
+            <Route path='/' exact component={HomePage} />
+
+            <Route path='/login' component={LoginPage} />
+            <Route path='/register' component={RegisterPage} />
+            <PrivateRoute exact path="/article" component={CreateArticle} />
+            <PrivateRoute exact path="/edit/article/:slug" component={CreateArticle} />
+            <PrivateRoute exact path="/article/:slug" component={ArticlePage} />
+
+            {/* <Route path="/login" component={LoginPage} /> */}
+            {/* <Route path="/register" component={RegisterPage} /> */}
+            {/* <Redirect from="*" to="/" /> */}
+          </Switch>
+
+        </div>
+      </Router>
+    );
+  }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    user: state.login.user
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(userActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
