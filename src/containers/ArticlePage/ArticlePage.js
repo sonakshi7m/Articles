@@ -4,6 +4,7 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert } from 'reactstrap';
+import moment from 'moment';
 
 import { history } from '../../helpers';
 import { feedActions } from '../../actions';
@@ -11,7 +12,6 @@ import { Comments } from '../Comments';
 
 import './ArticlePage.css';
 
-//import { userActions } from '../_actions';
 
 class ArticlePage extends Component {
 
@@ -99,7 +99,7 @@ class ArticlePage extends Component {
                             <a href="#"><img src={singleFeed.author && singleFeed.author.image} alt="IMG" /></a>
                             <div className="info">
                                 <Link to="/article/:slug" className="author" href="">{singleFeed.author && singleFeed.author.username}</Link>
-                                <span className="date" >{singleFeed.createdAt}</span>
+                                <span className="date" >{moment(singleFeed.createdAt).format('MMMM, Do YYYY, hh:mm a')}</span>
                             </div>
                         </div>
                     </div>
