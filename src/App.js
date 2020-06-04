@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { Router, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { PrivateRoute } from './components/PrivateRoute';
@@ -61,6 +62,7 @@ class App extends React.Component {
 
           <Switch>
             <Route path='/' exact component={HomePage} />
+            <Route path='/Article' exact component={HomePage} />
 
             <Route path='/login' component={LoginPage} />
             <Route path='/register' component={RegisterPage} />

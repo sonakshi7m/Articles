@@ -24,7 +24,7 @@ export const Header = ({ isLoggedin, user, logout }) => {
                         <NavLink href="/settings">Settings</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="">{username}</NavLink>
+                        <NavLink onClick={logout} href="">{username}</NavLink>
                         {/* <NavLink onClick={logout} href="">{username}</NavLink> */}
                     </NavItem>
 
