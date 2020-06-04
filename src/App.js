@@ -61,8 +61,7 @@ class App extends React.Component {
           <Header isLoggedin={this.isLoggedin} user={user} logout={this.logoutUser} />
 
           <Switch>
-            <Route path='/' exact component={HomePage} />
-            <Route path='/Article' exact component={HomePage} />
+            <Route path={['/', '/articles', '/Articles/ ']} exact component={HomePage} />
 
             <Route path='/login' component={LoginPage} />
             <Route path='/register' component={RegisterPage} />
