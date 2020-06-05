@@ -199,6 +199,38 @@ function* deleteCommentFlow() {
     yield takeLatest(feedConstants.DELETE_COMMENT_REQUEST, deleteComment);
 }
 
+function* fetchProfile(action) {
+
+    try {
+        const profile = yield call(userService.fetchProfile, action.payload);
+        yield put({ type: userConstants.FETCH_PROFILE_SUCCESS, payload: profile.data });
+
+    } catch (e) {
+        console.log(e.response);
+        yield put({ type: userConstants.FETCH_PROFILE_FAILURE, payload: e.response });
+    }
+}
+
+function* fetchProfileFlow() {
+    yield takeLatest(userConstants.FETCH_PROFILE_REQUEST, fetchProfile);
+}
+
+function* followUser(action) {
+
+    try {
+        const profile = yield call(userService.followUser, action.payload);
+        yield put({ type: userConstants.FOLLOW_USER_SUCCESS, payload: profile.data });
+
+    } catch (e) {
+        console.log(e.response);
+        yield put({ type: userConstants.FOLLOW_USER_FAILURE, payload: e.response });
+    }
+}
+
+function* followUserFlow() {
+    yield takeLatest(userConstants.FOLLOW_USER_REQUEST, followUser);
+}
+
 export default function* rootSaga() {
     yield all([
         registerFlow(),
@@ -211,7 +243,9 @@ export default function* rootSaga() {
         deleteArticleFlow(),
         fetchComments(),
         postCommentFlow(),
-        deleteCommentFlow()
+        deleteCommentFlow(),
+        fetchProfileFlow(),
+        followUserFlow()
     ]);
 }
 

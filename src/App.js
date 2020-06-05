@@ -12,6 +12,7 @@ import { LoginPage } from './containers/LoginPage';
 import { CreateArticle } from './containers/CreatArticle';
 import { ArticlePage } from './containers/ArticlePage';
 import { ProfilePage } from './containers/ProfilePage';
+import { Settings } from './containers/Settings';
 
 import { userActions } from './actions';
 
@@ -46,10 +47,8 @@ class App extends React.Component {
   render() {
 
     const { user } = this.props;
-    if (user) {
-      this.isLoggedin = true;
-
-    }
+    user ? this.isLoggedin = true : this.isLoggedin = false;
+    
 
     return (
       <Router history={history}>
@@ -70,7 +69,7 @@ class App extends React.Component {
             <PrivateRoute exact path="/article/:slug" component={ArticlePage} />
 
             <PrivateRoute path="/profile/:username" component={ProfilePage} />
-            {/* <Route path="/register" component={RegisterPage} /> */}
+            <PrivateRoute path="/settings" component={Settings} />
             {/* <Redirect from="*" to="/" /> */}
           </Switch>
 

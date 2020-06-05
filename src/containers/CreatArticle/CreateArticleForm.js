@@ -29,7 +29,8 @@ class CreateArticleForm extends React.Component {
                     })
                 }
                 onSubmit={onSubmit}
-                render={({ errors, status, touched }) => (
+            >
+                {({ errors, status, touched }) => (
                     <Form className="createArticleForm">
 
                         <div className="form-group">
@@ -58,7 +59,9 @@ class CreateArticleForm extends React.Component {
                         </div>
                     </Form>
                 )}
-            />
+
+            </Formik>
+
         )
     }
 

@@ -1,0 +1,10 @@
+.settings h3 {
+    margin-top: 1rem;
+    margin-bottom: -1rem;
+}
+
+.settingsform {
+    width: 50%;
+    margin: auto;
+    padding-top: 2rem;
+}

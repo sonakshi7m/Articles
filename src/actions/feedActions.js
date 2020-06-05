@@ -11,7 +11,7 @@ export const feedActions = {
     deleteComment
 };
 
-function fetchGlobalFeeds(params) {
+export function fetchGlobalFeeds(params) {
     return { type: feedConstants.GLOBAL_FEEDS_REQUEST, payload: params }
 }
 

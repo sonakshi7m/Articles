@@ -20,11 +20,11 @@ class Comments extends Component {
                                 <p className="card-text">{comment.body}</p>
                             </div>
                             <div className="card-footer">
-                                <a className="comment-author" href="">
+                                <span className="comment-author">
                                     <img src={comment.author.image} alt="author" className="comment-author-img" />
-                                </a>
+                                </span>
 
-                                <a className="comment-author" href="">{comment.author.usernam}</a>
+                                <span className="comment-author">{comment.author.usernam}</span>
                                 <span className="date-posted"> {moment(comment.updatedAt).format('MMMM, Do YYYY, hh:mm a')}</span>
                                 <span className="mod-options" onClick={() => handleDeleteComment(comment.id)}>
                                     <svg

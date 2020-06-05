@@ -79,7 +79,7 @@ export function globalFeeds(state = globalFeedsInitialState, action) {
         case feedConstants.GLOBAL_FEEDS_SUCCESS:
             return {
                 ...state, globalFeeds: action.payload.articles, error: null, loading: false,
-                totalPages: Math.ceil(action.payload.articlesCount / 20),
+                totalPages: Math.ceil(action.payload.articlesCount / 10),
                 totalCount: action.payload.articlesCount
 
             };

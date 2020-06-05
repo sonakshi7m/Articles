@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { registration } from './registrationReducer';
-import { login } from './loginReducer';
+import { login, profile } from './loginReducer';
 import { tag, globalFeeds, userFeeds, createArticle, singleFeed, deleteArticle, comments, } from './feedReducer';
 
 const rootReducer = combineReducers({
@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
     createArticle,
     deleteArticle,
     comments,
+    profile
     //postComment
 });
 

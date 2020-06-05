@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
 import { Button } from 'reactstrap';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Tabs } from '../../components/Tabs';
-import moment from 'moment';
 
-import { history } from '../../helpers';
-import { feedActions } from '../../actions';
-import { Comments } from '../Comments';
+import { GlobalFeeds } from '../../components/GlobalFeeds';
+import { Pagination } from '../../components/Pagination';
+import { fetchProfile, followUser } from '../../actions/userActions';
+import { fetchGlobalFeeds } from '../../actions/feedActions';
 
 import './ProfilePage.css';
 
@@ -19,18 +17,21 @@ class ProfilePage extends Component {
         super(props);
 
         this.state = {
-            limit: 5,
-            offset: 0
+            limit: 10,
+            offset: 0,
+            currentPage: 1,
         }
 
         this.username = this.props.match && this.props.match.params.username;
+
+        this.handlePageChange = this.handlePageChange.bind(this);
+        this.handleFollowClick = this.handleFollowClick.bind(this);
 
     }
 
 
     componentDidMount() {
         // const { slug } = this.props.match && this.props.match.params;
-
         if (this.username) {
             // this.props.fetchProfile(this.username);
             let params = {
@@ -41,21 +42,108 @@ class ProfilePage extends Component {
             this.props.fetchGlobalFeeds(params);
         }
 
+        //if (this.props.loggedinUser.username !== this.username) {
+        this.props.fetchProfile(this.username)
+        //}
+
     }
 
+    handleFollowClick(type) {
+        const { followUser } = this.props;
+
+        followUser({ type, username: this.username });
+    }
+
+    handlePageChange(pageNo, currentPage, totalPages) {
+        if (pageNo === 'next') {
+            if (currentPage < totalPages) {
+                //this.props.updateFeedsPagination("pageChange", currentPage + 1);
+                this.setState({
+                    currentPage: currentPage + 1,
+                    offset: this.state.offset + this.state.limit,
+                }, () => {
+                    let params = {
+                        limit: this.state.limit,
+                        offset: this.state.offset
+                    }
+                    //this.props.updateEmployeesParams("pageChange", currentPage + 1);
+                    this.props.fetchGlobalFeeds(params);
+                });
+
+            }
+        } else if (pageNo === 'previous') {
+            if (currentPage !== 1) {
+                this.setState({ currentPage: currentPage - 1 });
+                //this.props.updateEmployeesParams("pageChange", currentPage - 1);
+                this.setState({
+                    currentPage: currentPage - 1,
+                    offset: this.state.offset - this.state.limit
+                }, () => {
+                    let params = {
+                        limit: this.state.limit,
+                        offset: this.state.offset
+                    }
+                    //this.props.updateEmployeesParams("pageChange", currentPage + 1);
+                    this.props.fetchGlobalFeeds(params);
+                });
+            }
+        }
+    }
+
+
+
     render() {
-        const { articles, loggedinUser } = this.props;
+        //return <div>HELLO</div>
+        const { articles, loggedinUser, totalPages, totalCount, loading, profile } = this.props;
         console.log(articles, loggedinUser)
+        const { limit, offset, currentPage } = this.state;
+        var startIndex = offset + 1;
+
+        var lastIndex = totalCount < limit ? totalCount : offset + limit;
 
         return (
 
             <div className="container profile-page">
-                <div className="user-info">
-                    <img className="user-img" src="" />
-                    <h4 className="author">nipun22m</h4>
-                    <p className="bio"></p>
-                    <Button >Follow user</Button>
-                    <Button >Edit Profile Settings</Button>
+                {profile && <div className="user-info">
+                    <img className="user-img" alt="" src={profile && profile.image} />
+                    <h4 className="author">{profile && profile.username}</h4>
+                    <p className="bio">{profile && profile.bio}</p>
+                    {!profile.following &&
+                        <Button onClick={() => this.handleFollowClick('post')}>Follow {profile.username}</Button>}
+                    {profile.following &&
+                        <Button onClick={() => { this.handleFollowClick('delete') }}>Unfollow {profile.username}</Button>
+                    }
+                </div>
+                }
+
+
+                <div className="user-articles">
+                    <Tabs>
+                        <div label="My Articles">
+                            <GlobalFeeds articles={articles} loading={loading} />
+                            <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
+                                currentPage={currentPage}
+                                onPageChange={this.handlePageChange} totalPages={totalPages} />
+
+                        </div>
+
+                        <div label="Favorite Articles">
+                            {articles.length === 0 &&
+                                <div>No feeds available yet</div>
+                            }
+                            {articles.length &&
+                                <>
+                                    <GlobalFeeds articles={articles} />
+                                    <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
+                                        currentPage={currentPage}
+                                        onPageChange={this.handlePageChange} totalPages={totalPages} />
+                                </>
+                            }
+
+                        </div>
+
+
+                    </Tabs>
                 </div>
 
             </div >
@@ -69,12 +157,12 @@ class ProfilePage extends Component {
 function mapStateToProps(state) {
     return {
         articles: state.globalFeeds.globalFeeds,
-        loggedinUser: state.login.user
+        totalPages: state.globalFeeds.totalPages,
+        totalCount: state.globalFeeds.totalCount,
+        loggedinUser: state.login.user,
+        loading: state.globalFeeds.loading,
+        profile: state.profile.profile
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(feedActions, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default connect(mapStateToProps, { fetchProfile, fetchGlobalFeeds, followUser })(ProfilePage);

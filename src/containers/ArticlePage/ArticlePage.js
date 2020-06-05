@@ -96,7 +96,7 @@ class ArticlePage extends Component {
                     <div className="banner">
                         <h1>{singleFeed.title}</h1>
                         <div className="article-meta">
-                            <a href="#"><img src={singleFeed.author && singleFeed.author.image} alt="IMG" /></a>
+                            <span><img src={singleFeed.author && singleFeed.author.image} alt="IMG" /></span>
                             <div className="info">
                                 <Link to="/article/:slug" className="author" href="">{singleFeed.author && singleFeed.author.username}</Link>
                                 <span className="date" >{moment(singleFeed.createdAt).format('MMMM, Do YYYY, hh:mm a')}</span>

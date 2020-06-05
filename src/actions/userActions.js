@@ -4,7 +4,8 @@ export const userActions = {
     login,
     logout,
     register,
-    setLoginUser
+    setLoginUser,
+    fetchProfile
 };
 
 function login(user) {
@@ -29,4 +30,12 @@ export function logout() {
 
 export function setLoginUser(user) {
     return { type: userConstants.SET_LOGIN_USER, payload: user }
+}
+
+export function fetchProfile(payload) {
+    return { type: userConstants.FETCH_PROFILE_REQUEST, payload }
+}
+
+export function followUser(payload) {
+    return { type: userConstants.FOLLOW_USER_REQUEST, payload }
 }

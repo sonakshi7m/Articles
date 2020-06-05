@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+.container-article span:hover {
+    cursor: pointer;
+}
+
 .article-meta {
     display: block;
     position: relative;
