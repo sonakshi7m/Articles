@@ -7,6 +7,7 @@ import { Tags } from '../../components/Tags';
 import { Tabs } from '../../components/Tabs';
 import { GlobalFeeds } from '../../components/GlobalFeeds';
 import { Pagination } from '../../components/Pagination';
+import { history } from '../../helpers';
 
 import './HomePage.css';
 
@@ -25,6 +26,7 @@ class HomePage extends Component {
         }
 
         this.handlePageChange = this.handlePageChange.bind(this);
+        this.handleTagClick = this.handleTagClick.bind(this);
 
     }
 
@@ -36,6 +38,19 @@ class HomePage extends Component {
         }
         this.props.fetchGlobalFeeds(params);
     }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.singleFeed !== prevProps.singleFeed) {
+            let params = {
+                author: this.username,
+                limit: this.state.limit,
+                offset: this.state.offset,
+            }
+            this.props.fetchGlobalFeeds(params);
+        }
+    }
+
 
     handlePageChange(pageNo, currentPage, totalPages) {
         if (pageNo === 'next') {
@@ -73,10 +88,34 @@ class HomePage extends Component {
         }
     }
 
+    onMarkAsFavClick = (type, slug, favorited) => {
+        const {
+            loggedinUser,
+            markAsFavorite,
+        } = this.props;
+
+        if (!loggedinUser) {
+            history.push(`/login`);
+            return;
+        }
+
+        markAsFavorite({ type, slug, favorited });
+    };
+
+    handleTagClick(tag) {
+        const { fetchGlobalFeeds } = this.props;
+        let params = {
+            limit: this.state.limit,
+            offset: this.state.offset,
+            tag: tag.tag,
+        }
+        fetchGlobalFeeds(params);
+    }
 
 
     render() {
-        const { tags, loading, globalFeeds, totalPages, totalCount, loggedinUser, userFeeds, userFeedsLoading } = this.props;
+
+        const { tags, loading, globalFeeds, totalPages, totalCount, loggedinUser, userFeeds, userFeedsLoading, requesting } = this.props;
         const { limit, offset, currentPage } = this.state;
         var startIndex = offset + 1;
 
@@ -89,7 +128,7 @@ class HomePage extends Component {
                     <div className="col-md-8 feeds">
                         <Tabs>
                             <div label="Global Feeds">
-                                <GlobalFeeds articles={globalFeeds} />
+                                <GlobalFeeds articles={globalFeeds} handleMarkAsFavClick={this.onMarkAsFavClick} requesting={requesting} />
                                 <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
                                     currentPage={currentPage}
                                     onPageChange={this.handlePageChange} totalPages={totalPages} />
@@ -97,12 +136,12 @@ class HomePage extends Component {
                             </div>
 
                             <div label="My Feeds">
-                                {!userFeeds.length && !userFeedsLoading &&
+                                {userFeeds.length === 0 && !userFeedsLoading &&
                                     <div>No feeds available yet</div>
                                 }
-                                {userFeeds.length && !userFeedsLoading &&
+                                {userFeeds.length > 0 && !userFeedsLoading &&
                                     <>
-                                        <GlobalFeeds articles={userFeeds} feedsLoading={userFeedsLoading} />
+                                        <GlobalFeeds articles={userFeeds} feedsLoading={userFeedsLoading} loggedinUser={loggedinUser} />
                                         <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
                                             currentPage={currentPage}
                                             onPageChange={this.handlePageChange} totalPages={totalPages} />
@@ -115,7 +154,7 @@ class HomePage extends Component {
                         </Tabs>
 
                     </div>
-                    <Tags tags={tags} loading={loading} />
+                    <Tags tags={tags} loading={loading} onTagClick={this.handleTagClick} />
                 </div>
             )
         }
@@ -127,7 +166,7 @@ class HomePage extends Component {
                         <h6>Global Feeds</h6>
 
                         <div label="Global Feeds">
-                            <GlobalFeeds articles={globalFeeds} />
+                            <GlobalFeeds articles={globalFeeds} loggedinUser={loggedinUser} />
                             <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
                                 currentPage={currentPage}
                                 onPageChange={this.handlePageChange} totalPages={totalPages} />
@@ -136,7 +175,7 @@ class HomePage extends Component {
 
 
                     </div>
-                    <Tags tags={tags} loading={loading} />
+                    <Tags tags={tags} loading={loading} onTagClick={this.handleTagClick} />
 
                 </div>
             );
@@ -157,7 +196,9 @@ function mapStateToProps(state) {
         totalCount: state.globalFeeds.totalCount,
         loggedinUser: state.login.user,
         userFeeds: state.userFeeds.userFeeds,
-        userFeedsLoading: state.userFeeds.userFeedsLoading
+        userFeedsLoading: state.userFeeds.userFeedsLoading,
+        singleFeed: state.singleFeed.singleFeed,
+        requesting: state.singleFeed.requesting
     }
 }
 

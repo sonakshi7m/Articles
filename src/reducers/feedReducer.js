@@ -34,7 +34,8 @@ let singleFeedInitialState = {
     singleFeed: [],
     loading: false,
     error: null,
-    isSameUser: false
+    isSameUser: false,
+    requesting: false
 }
 
 let deleteArticleInitialState = {
@@ -52,7 +53,7 @@ let commentsInitialState = {
 
 function checkIfUserIsSame(article) {
     let user = JSON.parse(localStorage.getItem('user'));
-    if (user.username === article.author.username) {
+    if (user && user.username === article.author.username) {
         return true;
     }
     return false;
@@ -115,7 +116,17 @@ export function singleFeed(state = singleFeedInitialState, action) {
         case feedConstants.SINGLE_FEED_SUCCESS:
             return { ...state, singleFeed: action.payload.article, error: null, loading: false, isSameUser: checkIfUserIsSame(action.payload.article) };
         case feedConstants.SINGLE_FEED_FAILURE:
-            return { ...state, singleFeed: [], error: action.payload, loading: false };
+            return { ...state, singleFeed: [], error: action.payload, requesting: false };
+        case feedConstants.MARK_FAVORITE_REQUEST:
+            return { ...state, requesting: true };
+        case feedConstants.MARK_FAVORITE_SUCCESS:
+            return {
+                ...state, singleFeed: action.payload, error: null, requesting: false
+            };
+        case feedConstants.MARK_FAVORITE_FAILURE:
+            return {
+                ...state, requesting: false
+            };
         default:
             return state
     }
@@ -190,21 +201,3 @@ export function comments(state = commentsInitialState, action) {
             return state
     }
 }
-// export function postComment(state = commentsInitialState, action) {
-//     switch (action.type) {
-//         case feedConstants.POST_COMMENT_REQUEST:
-//             return { ...state, posting: true };
-//         case feedConstants.POST_COMMENT_SUCCESS:
-//             const { comments } = state;
-
-//             return {
-//                 ...state,
-//                 requesting: false,
-//                 comments: [action.payload, ...comments],
-//             };
-//         case feedConstants.POST_COMMENT_FAILURE:
-//             return { ...state, error: action.payload, posting: false };
-//         default:
-//             return state
-//     }
-// }

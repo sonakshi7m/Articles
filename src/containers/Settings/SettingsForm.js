@@ -6,7 +6,6 @@ import './Settings.css';
 class SettingForm extends React.Component {
 
     render() {
-        console.log(this.props.user)
         let {
             onSubmit,
             data,
@@ -14,7 +13,6 @@ class SettingForm extends React.Component {
         } = this.props;
 
         data = { ...user }
-        console.log(data)
         return (
             <Formik
                 validateOnChange={false}

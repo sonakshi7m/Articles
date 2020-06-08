@@ -16,7 +16,14 @@ function* registerUser(action) {
 
     } catch (e) {
         console.log(e.response);
-        toast.error(`Registration Failed ${JSON.stringify(e.response.data.errors)}`, { position: toast.POSITION.TOP_RIGHT })
+        let errorMap = e.response.data.errors;
+        let errorKeys = Object.keys(errorMap);
+        let message = errorKeys.map((errorName, index) => {
+            return `${errorName} ${errorMap[errorName]}${
+                index === errorKeys.length - 2 ? ", " : ""
+                }`;
+        });
+        toast.error({ message }, { position: toast.POSITION.TOP_RIGHT })
         yield put({ type: "REGISTER_FAILURE", payload: e.response.data.errors });
     }
 }
@@ -28,20 +35,25 @@ function* registerFlow() {
 function* loginUser(action) {
     try {
         const user = yield call(userService.login, action.payload);
-        console.log("login success in saga ", user.data.user);
         yield put({ type: userConstants.LOGIN_SUCCESS, payload: user.data.user })
         localStorage.setItem('user', JSON.stringify(user.data.user));
 
         history.push('/')
     } catch (e) {
         console.log(e.response);
-        toast.error(`Login Failed ${JSON.stringify(e.response.data.errors)}`, { position: toast.POSITION.TOP_RIGHT })
+        let errorMap = e.response.data.errors;
+        let errorKeys = Object.keys(errorMap);
+        let message = errorKeys.map((errorName, index) => {
+            return `${errorName} ${errorMap[errorName]}${
+                index === errorKeys.length - 2 ? ", " : ""
+                }`;
+        });
+        toast.error({ message }, { position: toast.POSITION.TOP_RIGHT })
         yield put({ type: userConstants.LOGIN_FAILURE, payload: e.response.data.errors });
     }
 }
 
 function* loginFlow() {
-    console.log("in login flow");
     yield takeLatest(userConstants.LOGIN_REQUEST, loginUser)
 }
 
@@ -82,9 +94,11 @@ function* singleFeed(action) {
     try {
         const singleFeed = yield call(feedService.singleFeed, action.payload);
         yield put({ type: feedConstants.SINGLE_FEED_SUCCESS, payload: singleFeed.data });
+        yield put({ type: userConstants.FETCH_PROFILE_REQUEST, payload: singleFeed.data.article.author.username })
+
 
     } catch (e) {
-        console.log(e.response);
+        console.log(e);
         yield put({ type: feedConstants.SINGLE_FEED_FAILURE, payload: e.response.data });
     }
 }
@@ -220,6 +234,7 @@ function* followUser(action) {
     try {
         const profile = yield call(userService.followUser, action.payload);
         yield put({ type: userConstants.FOLLOW_USER_SUCCESS, payload: profile.data });
+        // yield put({ type: feedConstants.FETCH_PROFILE_REQUEST, payload: action.payload.username });
 
     } catch (e) {
         console.log(e.response);
@@ -229,6 +244,22 @@ function* followUser(action) {
 
 function* followUserFlow() {
     yield takeLatest(userConstants.FOLLOW_USER_REQUEST, followUser);
+}
+
+function* markAsFavorite(action) {
+
+    try {
+        const favoriteArticle = yield call(feedService.markAsFavorite, action.payload);
+        yield put({ type: feedConstants.MARK_FAVORITE_SUCCESS, payload: favoriteArticle.data.article });
+
+    } catch (e) {
+        console.log(e.response);
+        yield put({ type: feedConstants.MARK_FAVORITE_FAILURE, payload: e.response });
+    }
+}
+
+function* markAsFavouriteFlow() {
+    yield takeLatest(feedConstants.MARK_FAVORITE_REQUEST, markAsFavorite);
 }
 
 export default function* rootSaga() {
@@ -245,70 +276,7 @@ export default function* rootSaga() {
         postCommentFlow(),
         deleteCommentFlow(),
         fetchProfileFlow(),
-        followUserFlow()
+        followUserFlow(),
+        markAsFavouriteFlow()
     ]);
 }
-
-// export function* authorize({ user, isRegistering }) {
-//     // We send an action that tells Redux we're sending a request
-//     yield put({ type: userConstants.SENDING_REQUEST, sending: true })
-
-//     // We then try to register or log in the user, depending on the request
-//     try {
-//         let response;
-//         console.log("isRegistering", isRegistering)
-
-//         // For either log in or registering, we call the proper function in the `auth`
-//         // module, which is asynchronous. Because we're using generators, we can work
-//         // as if it's synchronous because we pause execution until the call is done
-//         // with `yield`!
-//         if (isRegistering) {
-//             response = yield call(userService.register, user);
-
-
-//             console.log("response = ", response);
-//         } else {
-//             // response = yield call(auth.login, username, hash)
-//         }
-
-//         return response
-//     } catch (error) {
-//         console.log(error)
-//         // If we get an error we send Redux the appropiate action and return
-//         yield put({ type: userConstants.REQUEST_ERROR, error: error.message })
-
-//         return false
-//     } finally {
-//         // When done, we tell Redux we're not in the middle of a request any more
-//         yield put({ type: userConstants.SENDING_REQUEST, sending: false })
-//     }
-// }
-
-
-// export function* registerFlow() {
-//     console.log("here")
-//     // We always listen to `REGISTER_REQUEST` actions
-//     yield take(userConstants.REGISTER_REQUEST, register);
-//     //const user = request.user;
-
-//     //console.log("herehere:: ", user)
-
-//     // We call the `authorize` task with the data, telling it that we are registering a user
-//     // This returns `true` if the registering was successful, `false` if not
-//     // const wasSuccessful = yield call(authorize, { user, isRegistering: true })
-//     // console.log("wassuccessfull: == ", wasSuccessful);
-
-//     // If we could register a user, we send the appropiate actions
-//     //if (wasSuccessful) {
-//     //  console.log("successfull :: ", wasSuccessful)
-//     // yield put({ type: SET_AUTH, newAuthState: true }) // User is logged in (authorized) after being registered
-//     // yield put({ type: CHANGE_FORM, newFormState: { username: '', password: '' } }) // Clear form
-//     // forwardTo('/dashboard') // Go to dashboard page
-//     //    }
-// }
-
-// export default function* root() {
-//     // yield fork(loginFlow)
-//     // yield fork(logoutFlow)
-//     yield fork(registerFlow)
-// }

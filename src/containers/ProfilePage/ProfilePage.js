@@ -6,7 +6,8 @@ import { Tabs } from '../../components/Tabs';
 import { GlobalFeeds } from '../../components/GlobalFeeds';
 import { Pagination } from '../../components/Pagination';
 import { fetchProfile, followUser } from '../../actions/userActions';
-import { fetchGlobalFeeds } from '../../actions/feedActions';
+import { fetchGlobalFeeds, markAsFavorite } from '../../actions/feedActions';
+import { history } from '../../helpers';
 
 import './ProfilePage.css';
 
@@ -48,11 +49,37 @@ class ProfilePage extends Component {
 
     }
 
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.singleFeed !== prevProps.singleFeed) {
+            let params = {
+                author: this.username,
+                limit: this.state.limit,
+                offset: this.state.offset,
+            }
+            this.props.fetchGlobalFeeds(params);
+        }
+    }
+
     handleFollowClick(type) {
         const { followUser } = this.props;
 
         followUser({ type, username: this.username });
     }
+
+    onMarkAsFavClick = (type, slug, favorited) => {
+        const {
+            loggedinUser,
+            markAsFavorite,
+        } = this.props;
+
+        if (!loggedinUser) {
+            history.push(`/login`);
+            return;
+        }
+
+        markAsFavorite({ type, slug, favorited });
+    };
 
     handlePageChange(pageNo, currentPage, totalPages) {
         if (pageNo === 'next') {
@@ -93,9 +120,7 @@ class ProfilePage extends Component {
 
 
     render() {
-        //return <div>HELLO</div>
-        const { articles, loggedinUser, totalPages, totalCount, loading, profile } = this.props;
-        console.log(articles, loggedinUser)
+        const { articles, totalPages, totalCount, loading, profile, loggedinUser } = this.props;
         const { limit, offset, currentPage } = this.state;
         var startIndex = offset + 1;
 
@@ -120,7 +145,8 @@ class ProfilePage extends Component {
                 <div className="user-articles">
                     <Tabs>
                         <div label="My Articles">
-                            <GlobalFeeds articles={articles} loading={loading} />
+                            <GlobalFeeds articles={articles} loading={loading} showFavorites={true}
+                                handleMarkAsFavClick={this.onMarkAsFavClick} loggedinUser={loggedinUser} />
                             <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
                                 currentPage={currentPage}
                                 onPageChange={this.handlePageChange} totalPages={totalPages} />
@@ -161,8 +187,10 @@ function mapStateToProps(state) {
         totalCount: state.globalFeeds.totalCount,
         loggedinUser: state.login.user,
         loading: state.globalFeeds.loading,
-        profile: state.profile.profile
+        profile: state.profile.profile,
+        requesting: state.singleFeed.requesting,
+        singleFeed: state.singleFeed.singleFeed
     }
 }
 
-export default connect(mapStateToProps, { fetchProfile, fetchGlobalFeeds, followUser })(ProfilePage);
+export default connect(mapStateToProps, { fetchProfile, fetchGlobalFeeds, followUser, markAsFavorite })(ProfilePage);

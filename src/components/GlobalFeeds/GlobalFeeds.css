@@ -47,3 +47,16 @@ article-meta .info .author {
     font-size: .8rem;
     display: block;
 }
+
+.info-action {
+    float: right;
+    border: 1px solid #5cb85c;
+    padding: .2rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: #5cb85c;
+    min-width: 3rem;
+    text-align: center;
+    margin-left: 1rem;
+    cursor: pointer;
+}

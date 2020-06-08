@@ -11,7 +11,8 @@ export const feedService = {
     deleteArticle,
     comments,
     postComment,
-    deleteComment
+    deleteComment,
+    markAsFavorite
 };
 
 async function globalFeeds(payload) {
@@ -82,4 +83,19 @@ async function deleteComment(payload) {
 
     const res = await axios.delete(`${API_URL}articles/${payload.slug}/comments/${payload.commentId}`, axiosConfig);
     return res;
+}
+
+async function markAsFavorite(payload) {
+    let axiosConfig = {
+        headers: authHeader()
+    };
+
+    if (payload.type === 'post') {
+        const res = await axios.post(`${API_URL}articles/${payload.slug}/favorite`, null, axiosConfig);
+        return res;
+    } else {
+        const res = await axios.delete(`${API_URL}articles/${payload.slug}/favorite`, axiosConfig);
+        return res;
+    }
+
 }

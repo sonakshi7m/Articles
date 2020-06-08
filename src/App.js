@@ -48,7 +48,7 @@ class App extends React.Component {
 
     const { user } = this.props;
     user ? this.isLoggedin = true : this.isLoggedin = false;
-    
+
 
     return (
       <Router history={history}>
@@ -64,11 +64,11 @@ class App extends React.Component {
 
             <Route path={['/login', '/articles/login', '/Articles/login ']} component={LoginPage} />
             <Route path='/register' component={RegisterPage} />
-            <PrivateRoute exact path="/article" component={CreateArticle} />
+            <Route exact path="/article" component={CreateArticle} />
             <PrivateRoute exact path="/edit/article/:slug" component={CreateArticle} />
-            <PrivateRoute exact path="/article/:slug" component={ArticlePage} />
+            <Route exact path="/article/:slug" component={ArticlePage} />
 
-            <PrivateRoute path="/profile/:username" component={ProfilePage} />
+            <Route path="/profile/:username" component={ProfilePage} />
             <PrivateRoute path="/settings" component={Settings} />
             {/* <Redirect from="*" to="/" /> */}
           </Switch>

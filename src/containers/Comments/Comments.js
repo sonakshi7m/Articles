@@ -21,7 +21,7 @@ class Comments extends Component {
                             </div>
                             <div className="card-footer">
                                 <span className="comment-author">
-                                    <img src={comment.author.image} alt="author" className="comment-author-img" />
+                                    <img src={comment.author.image} alt="" className="comment-author-img" />
                                 </span>
 
                                 <span className="comment-author">{comment.author.usernam}</span>

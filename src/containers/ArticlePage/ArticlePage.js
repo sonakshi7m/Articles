@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Button, Form, FormGroup, Input } from 'reactstrap';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Alert } from 'reactstrap';
 import moment from 'moment';
 
 import { history } from '../../helpers';
-import { feedActions } from '../../actions';
+import { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, markAsFavorite } from '../../actions/feedActions';
+import { fetchProfile, followUser } from '../../actions/userActions';
 import { Comments } from '../Comments';
 
 import './ArticlePage.css';
@@ -32,6 +32,7 @@ class ArticlePage extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handlePostComment = this.handlePostComment.bind(this);
         this.onDeleteComment = this.onDeleteComment.bind(this);
+        this.handleMarkAsFavorite = this.handleMarkAsFavorite.bind(this);
     }
 
 
@@ -39,9 +40,11 @@ class ArticlePage extends Component {
         // const { slug } = this.props.match && this.props.match.params;
 
         if (this.slug) {
-            this.props.fetchSingleFeed(this.slug);
+            this.props.fetchSingleFeed(this.slug)
             this.props.fetchComments(this.slug);
         }
+
+        this.handleFollowClick = this.handleFollowClick.bind(this);
 
     }
 
@@ -85,8 +88,20 @@ class ArticlePage extends Component {
         this.setState({ comment: '' })
     }
 
+    handleFollowClick(type, slug) {
+        const { followUser, profile, loggedinUser } = this.props;
+
+        loggedinUser ? followUser({ type, username: profile.username, slug }) : history.push('/login');
+    }
+
+    handleMarkAsFavorite(type) {
+        const { markAsFavorite, loggedinUser } = this.props;
+
+        loggedinUser ? markAsFavorite({ type, slug: this.slug }) : history.push('/login');
+    }
+
     render() {
-        const { singleFeed, isSameUser, comments } = this.props;
+        const { singleFeed, isSameUser, comments, profile } = this.props;
         const { isOpen } = this.state;
 
         if (singleFeed) {
@@ -98,7 +113,7 @@ class ArticlePage extends Component {
                         <div className="article-meta">
                             <span><img src={singleFeed.author && singleFeed.author.image} alt="IMG" /></span>
                             <div className="info">
-                                <Link to="/article/:slug" className="author" href="">{singleFeed.author && singleFeed.author.username}</Link>
+                                <Link to={`/profile/${singleFeed.author && singleFeed.author.username}`} className="author" href="">{singleFeed.author && singleFeed.author.username}</Link>
                                 <span className="date" >{moment(singleFeed.createdAt).format('MMMM, Do YYYY, hh:mm a')}</span>
                             </div>
                         </div>
@@ -121,8 +136,10 @@ class ArticlePage extends Component {
                         !isSameUser &&
 
                         <div className="article-meta">
-                            <Button>Follow {singleFeed.author && singleFeed.author.username} </Button>
-                            <Button>Favorite Article</Button>
+                            {profile && !profile.following && <Button onClick={() => this.handleFollowClick('post', singleFeed.slug)}>Follow {profile && profile.username} </Button>}
+                            {profile && profile.following && <Button onClick={() => this.handleFollowClick('delete', singleFeed.slug)}>Unfollow {profile && profile.username} </Button>}
+                            {singleFeed && !singleFeed.favorited && <Button onClick={() => this.handleMarkAsFavorite('post')}>Favorite Article </Button>}
+                            {singleFeed && singleFeed.favorited && <Button onClick={() => this.handleMarkAsFavorite('delete')}>Unfavorite Article </Button>}
                         </div>
                     }
 
@@ -155,12 +172,9 @@ function mapStateToProps(state) {
         singleFeed: state.singleFeed.singleFeed,
         isSameUser: state.singleFeed.isSameUser,
         comments: state.comments.comments,
+        profile: state.profile.profile,
         //commentPosted: state.postComment.posted
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(feedActions, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ArticlePage);
+export default connect(mapStateToProps, { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, fetchProfile, followUser, markAsFavorite })(ArticlePage);

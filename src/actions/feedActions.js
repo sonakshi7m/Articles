@@ -8,38 +8,43 @@ export const feedActions = {
     deleteArticle,
     fetchComments,
     postComment,
-    deleteComment
+    deleteComment,
+    markAsFavorite
 };
 
 export function fetchGlobalFeeds(params) {
     return { type: feedConstants.GLOBAL_FEEDS_REQUEST, payload: params }
 }
 
-function fetchTags() {
+export function fetchTags() {
     return { type: feedConstants.TAGS_REQUEST }
 }
 
-function createArticle(payload) {
+export function createArticle(payload) {
     return { type: feedConstants.CREATE_ARTICLE_REQUEST, payload }
 }
 
-function fetchSingleFeed(payload) {
+export function fetchSingleFeed(payload) {
     return { type: feedConstants.SINGLE_FEED_REQUEST, payload }
 }
 
-function deleteArticle(payload) {
+export function deleteArticle(payload) {
     return { type: feedConstants.DELETE_ARTICLE_REQUEST, payload }
 }
 
-function fetchComments(payload) {
+export function fetchComments(payload) {
     return { type: feedConstants.FETCH_COMMENTS_REQUEST, payload }
 
 }
-function postComment(payload) {
+export function postComment(payload) {
     return { type: feedConstants.POST_COMMENT_REQUEST, payload }
 }
 
-function deleteComment(payload) {
+export function deleteComment(payload) {
     return { type: feedConstants.DELETE_COMMENT_REQUEST, payload }
+
+}
+export function markAsFavorite(payload) {
+    return { type: feedConstants.MARK_FAVORITE_REQUEST, payload }
 }
 
