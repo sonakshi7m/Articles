@@ -6,7 +6,7 @@ import { Alert } from 'reactstrap';
 import moment from 'moment';
 
 import { history } from '../../helpers';
-import { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, markAsFavorite } from '../../actions/feedActions';
+import { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, markArticleAsFavorite } from '../../actions/feedActions';
 import { fetchProfile, followUser } from '../../actions/userActions';
 import { Comments } from '../Comments';
 
@@ -95,9 +95,9 @@ class ArticlePage extends Component {
     }
 
     handleMarkAsFavorite(type) {
-        const { markAsFavorite, loggedinUser } = this.props;
+        const { markArticleAsFavorite, loggedinUser } = this.props;
 
-        loggedinUser ? markAsFavorite({ type, slug: this.slug }) : history.push('/login');
+        loggedinUser ? markArticleAsFavorite({ type, slug: this.slug }) : history.push('/login');
     }
 
     render() {
@@ -177,4 +177,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, fetchProfile, followUser, markAsFavorite })(ArticlePage);
+export default connect(mapStateToProps, { fetchSingleFeed, fetchComments, deleteComment, deleteArticle, postComment, fetchProfile, followUser, markArticleAsFavorite })(ArticlePage);

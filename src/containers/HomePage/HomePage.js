@@ -21,12 +21,14 @@ class HomePage extends Component {
         this.state = {
             limit: 10,
             currentPage: 1,
-            offset: 0
+            offset: 0,
+            tag: ''
 
         }
 
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleTagClick = this.handleTagClick.bind(this);
+        this.handleLoadList = this.handleLoadList.bind(this);
 
     }
 
@@ -37,6 +39,15 @@ class HomePage extends Component {
             offset: this.state.offset
         }
         this.props.fetchGlobalFeeds(params);
+    }
+
+    handleLoadList(articleOffset) {
+        if (this.state.tag) {
+            this.props.fetchGlobalFeeds({ limit: this.state.limit, offset: articleOffset, tag: this.state.tag.tag });
+        } else {
+            this.props.fetchGlobalFeeds({ limit: this.state.limit, offset: articleOffset });
+        }
+
     }
 
     componentDidUpdate(prevProps) {
@@ -104,6 +115,7 @@ class HomePage extends Component {
 
     handleTagClick(tag) {
         const { fetchGlobalFeeds } = this.props;
+        this.setState({ tag });
         let params = {
             limit: this.state.limit,
             offset: this.state.offset,
@@ -114,12 +126,7 @@ class HomePage extends Component {
 
 
     render() {
-
-        const { tags, loading, globalFeeds, totalPages, totalCount, loggedinUser, userFeeds, userFeedsLoading, requesting } = this.props;
-        const { limit, offset, currentPage } = this.state;
-        var startIndex = offset + 1;
-
-        var lastIndex = offset + limit;
+        const { tags, loading, globalFeeds, totalCount, loggedinUser, userFeeds, userFeedsLoading, requesting } = this.props;
 
         if (loggedinUser) {
             return (
@@ -128,10 +135,13 @@ class HomePage extends Component {
                     <div className="col-md-8 feeds">
                         <Tabs>
                             <div label="Global Feeds">
-                                <GlobalFeeds articles={globalFeeds} handleMarkAsFavClick={this.onMarkAsFavClick} requesting={requesting} />
-                                <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
-                                    currentPage={currentPage}
-                                    onPageChange={this.handlePageChange} totalPages={totalPages} />
+                                <GlobalFeeds articles={globalFeeds} handleMarkAsFavClick={this.onMarkAsFavClick} loggedinUser={loggedinUser} requesting={requesting} />
+
+                                <Pagination
+                                    totalNumberOfItem={totalCount}
+                                    dataLimit={this.state.limit}
+                                    loadList={this.handleLoadList}
+                                />
 
                             </div>
 
@@ -142,9 +152,12 @@ class HomePage extends Component {
                                 {userFeeds.length > 0 && !userFeedsLoading &&
                                     <>
                                         <GlobalFeeds articles={userFeeds} feedsLoading={userFeedsLoading} loggedinUser={loggedinUser} />
-                                        <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
-                                            currentPage={currentPage}
-                                            onPageChange={this.handlePageChange} totalPages={totalPages} />
+                                        <Pagination
+                                            totalNumberOfItem={totalCount}
+                                            dataLimit={this.state.limit}
+                                            loadList={this.handleLoadList}
+                                        />
+
                                     </>
                                 }
 
@@ -167,9 +180,12 @@ class HomePage extends Component {
 
                         <div label="Global Feeds">
                             <GlobalFeeds articles={globalFeeds} loggedinUser={loggedinUser} />
-                            <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
-                                currentPage={currentPage}
-                                onPageChange={this.handlePageChange} totalPages={totalPages} />
+
+                            <Pagination
+                                totalNumberOfItem={totalCount}
+                                dataLimit={this.state.limit}
+                                loadList={this.handleLoadList}
+                            />
 
                         </div>
 

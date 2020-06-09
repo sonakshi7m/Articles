@@ -262,6 +262,22 @@ function* markAsFavouriteFlow() {
     yield takeLatest(feedConstants.MARK_FAVORITE_REQUEST, markAsFavorite);
 }
 
+function* markArticleAsFavorite(action) {
+
+    try {
+        const favoriteArticle = yield call(feedService.markAsFavorite, action.payload);
+        yield put({ type: feedConstants.MARK_ARTICLE_FAVORITE_SUCCESS, payload: favoriteArticle.data.article });
+
+    } catch (e) {
+        console.log(e.response);
+        yield put({ type: feedConstants.MARK_ARTICLE_FAVORITE_FAILURE, payload: e.response });
+    }
+}
+
+function* markArticleAsFavoriteFlow() {
+    yield takeLatest(feedConstants.MARK_ARTICLE_FAVORITE_REQUEST, markArticleAsFavorite);
+}
+
 export default function* rootSaga() {
     yield all([
         registerFlow(),
@@ -277,6 +293,7 @@ export default function* rootSaga() {
         deleteCommentFlow(),
         fetchProfileFlow(),
         followUserFlow(),
-        markAsFavouriteFlow()
+        markAsFavouriteFlow(),
+        markArticleAsFavoriteFlow()
     ]);
 }

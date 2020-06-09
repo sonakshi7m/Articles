@@ -1,32 +1,37 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Button } from "reactstrap";
 
-import './Pagination.css'
+export function Pagination({
+    loadList,
+    dataLimit,
+    totalNumberOfItem
+}) {
+    let [currentPageNumber, setCurrentPageNumber] = useState(1);
+    let getPaginationMarkup = () => {
+        let paginationButtonsCount = totalNumberOfItem / dataLimit;
+        let buttonMarkup = [];
 
-export const Pagination = ({ startIndex, lastIndex, totalPages, totalCount, onPageChange, currentPage }) => {
+        for (let i = 0; i < paginationButtonsCount; i++) {
+            buttonMarkup.push(
+                <Button
+                    style={{ 'backgroundColor': 'green', 'margin': '0.2rem' }}
+                    variant="outline-success"
+                    className={currentPageNumber === i + 1 ? "selected" : ""}
+                    onClick={e => {
+                        setCurrentPageNumber(i + 1);
+                        e.stopPropagation();
+                        loadList(i * 10);
+                    }}
+                    value={i}
+                    key={i}
+                >
+                    {i + 1}
+                </Button>
+            );
+        }
 
-    return (
-        <div className="row">
-            <div className="col-sm-12 footer-pagination d-flex">
-                <nav className="form-inline" aria-label="Page navigation example">
-                    <div className="fnt-sm pagination-number">
-                        <span className="fnt-bold">{startIndex}-{lastIndex} </span>of
-                                    <a className="pl-1" href="/">{totalCount}</a></div>
-                    <ul className="pagination text-center">
-                        <li className={"page-item " + (currentPage !== 1 ? 'active' : "")}
-                            onClick={(e) => onPageChange('previous', currentPage)}>
-                            <a className="page-link border-0 ml-3" href="/">
-                                <i className="arrow left"></i>
-                            </a>
-                        </li>
-                        <li className={"page-item " + (currentPage < totalPages ? 'active' : '')}
-                            onClick={(e) => onPageChange('next', currentPage, totalPages)}>
-                            <a className="page-link border-0 ml-3" href="/">
-                                <i className="arrow right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div >
-    )
+        return buttonMarkup;
+    };
+
+    return <div>{getPaginationMarkup()}</div>;
 }

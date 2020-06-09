@@ -86,6 +86,23 @@ export function globalFeeds(state = globalFeedsInitialState, action) {
             };
         case feedConstants.GLOBAL_FEEDS_FAILURE:
             return { ...state, globalFeeds: [], error: action.payload, loading: false };
+
+        case feedConstants.MARK_FAVORITE_SUCCESS:
+            return {
+                ...state,
+                globalFeeds: state.globalFeeds.map((article) =>
+                    article.slug === action.payload.slug
+                        ? { ...article, favorited: action.payload.favorited, favoritesCount: action.payload.favoritesCount }
+                        : article
+                ),
+                error: null, requesting: false
+            };
+        case feedConstants.MARK_FAVORITE_FAILURE:
+            return {
+                ...state, requesting: false
+            };
+        case feedConstants.MARK_FAVORITE_REQUEST:
+            return { ...state, requesting: true };
         default:
             return state
     }
@@ -117,13 +134,13 @@ export function singleFeed(state = singleFeedInitialState, action) {
             return { ...state, singleFeed: action.payload.article, error: null, loading: false, isSameUser: checkIfUserIsSame(action.payload.article) };
         case feedConstants.SINGLE_FEED_FAILURE:
             return { ...state, singleFeed: [], error: action.payload, requesting: false };
-        case feedConstants.MARK_FAVORITE_REQUEST:
+        case feedConstants.MARK_ARTICLE_FAVORITE_REQUEST:
             return { ...state, requesting: true };
-        case feedConstants.MARK_FAVORITE_SUCCESS:
+        case feedConstants.MARK_ARTICLE_FAVORITE_SUCCESS:
             return {
                 ...state, singleFeed: action.payload, error: null, requesting: false
             };
-        case feedConstants.MARK_FAVORITE_FAILURE:
+        case feedConstants.MARK_ARTICLE_FAVORITE_FAILURE:
             return {
                 ...state, requesting: false
             };

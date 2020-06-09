@@ -17,6 +17,7 @@ import { Settings } from './containers/Settings';
 import { userActions } from './actions';
 
 import { ToastContainer } from 'react-toastify';
+import NotFound from './components/NotFound/NotFound';
 
 import './App.css';
 
@@ -40,7 +41,8 @@ class App extends React.Component {
 
   logoutUser() {
     localStorage.removeItem("user");
-    this.props.logout(() => { history.push('/') });
+    this.props.logout();
+    history.push('/')
 
   }
 
@@ -70,7 +72,7 @@ class App extends React.Component {
 
             <Route path="/profile/:username" component={ProfilePage} />
             <PrivateRoute path="/settings" component={Settings} />
-            {/* <Redirect from="*" to="/" /> */}
+            <Route component={NotFound} />
           </Switch>
 
         </div>

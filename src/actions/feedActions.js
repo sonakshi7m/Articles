@@ -9,7 +9,8 @@ export const feedActions = {
     fetchComments,
     postComment,
     deleteComment,
-    markAsFavorite
+    markAsFavorite,
+    markArticleAsFavorite
 };
 
 export function fetchGlobalFeeds(params) {
@@ -47,4 +48,8 @@ export function deleteComment(payload) {
 export function markAsFavorite(payload) {
     return { type: feedConstants.MARK_FAVORITE_REQUEST, payload }
 }
+export function markArticleAsFavorite(payload) {
+    return { type: feedConstants.MARK_ARTICLE_FAVORITE_REQUEST, payload }
+}
+
 
