@@ -21,11 +21,12 @@ class ProfilePage extends Component {
             limit: 10,
             offset: 0,
             currentPage: 1,
+            isSameUser: false
         }
 
         this.username = this.props.match && this.props.match.params.username;
 
-        this.handlePageChange = this.handlePageChange.bind(this);
+        this.handleLoadList = this.handleLoadList.bind(this);
         this.handleFollowClick = this.handleFollowClick.bind(this);
 
     }
@@ -46,6 +47,10 @@ class ProfilePage extends Component {
         //if (this.props.loggedinUser.username !== this.username) {
         this.props.fetchProfile(this.username)
         //}
+        let user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            this.setState({ isSameUser: true })
+        }
 
     }
 
@@ -81,55 +86,20 @@ class ProfilePage extends Component {
         markAsFavorite({ type, slug, favorited });
     };
 
-    handlePageChange(pageNo, currentPage, totalPages) {
-        if (pageNo === 'next') {
-            if (currentPage < totalPages) {
-                //this.props.updateFeedsPagination("pageChange", currentPage + 1);
-                this.setState({
-                    currentPage: currentPage + 1,
-                    offset: this.state.offset + this.state.limit,
-                }, () => {
-                    let params = {
-                        limit: this.state.limit,
-                        offset: this.state.offset
-                    }
-                    //this.props.updateEmployeesParams("pageChange", currentPage + 1);
-                    this.props.fetchGlobalFeeds(params);
-                });
-
-            }
-        } else if (pageNo === 'previous') {
-            if (currentPage !== 1) {
-                this.setState({ currentPage: currentPage - 1 });
-                //this.props.updateEmployeesParams("pageChange", currentPage - 1);
-                this.setState({
-                    currentPage: currentPage - 1,
-                    offset: this.state.offset - this.state.limit
-                }, () => {
-                    let params = {
-                        limit: this.state.limit,
-                        offset: this.state.offset
-                    }
-                    //this.props.updateEmployeesParams("pageChange", currentPage + 1);
-                    this.props.fetchGlobalFeeds(params);
-                });
-            }
-        }
+    handleLoadList(articleOffset) {
+        this.props.fetchGlobalFeeds({ limit: this.state.limit, offset: articleOffset });
     }
 
 
 
     render() {
-        const { articles, totalPages, totalCount, loading, profile, loggedinUser } = this.props;
-        const { limit, offset, currentPage } = this.state;
-        var startIndex = offset + 1;
-
-        var lastIndex = totalCount < limit ? totalCount : offset + limit;
+        const { articles, totalCount, loading, profile, loggedinUser } = this.props;
+        const { isSameUser } = this.state;
 
         return (
 
             <div className="container profile-page">
-                {profile && <div className="user-info">
+                {profile && !isSameUser && < div className="user-info">
                     <img className="user-img" alt="" src={profile && profile.image} />
                     <h4 className="author">{profile && profile.username}</h4>
                     <p className="bio">{profile && profile.bio}</p>
@@ -147,9 +117,11 @@ class ProfilePage extends Component {
                         <div label="My Articles">
                             <GlobalFeeds articles={articles} loading={loading} showFavorites={true}
                                 handleMarkAsFavClick={this.onMarkAsFavClick} loggedinUser={loggedinUser} />
-                            <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
-                                currentPage={currentPage}
-                                onPageChange={this.handlePageChange} totalPages={totalPages} />
+                            {totalCount > 10 && <Pagination
+                                totalNumberOfItem={totalCount}
+                                dataLimit={this.state.limit}
+                                loadList={this.handleLoadList}
+                            />}
 
                         </div>
 
@@ -160,9 +132,11 @@ class ProfilePage extends Component {
                             {articles.length &&
                                 <>
                                     <GlobalFeeds articles={articles} />
-                                    <Pagination startIndex={startIndex} lastIndex={lastIndex} totalCount={totalCount}
-                                        currentPage={currentPage}
-                                        onPageChange={this.handlePageChange} totalPages={totalPages} />
+                                    {totalCount > 10 && <Pagination
+                                        totalNumberOfItem={totalCount}
+                                        dataLimit={this.state.limit}
+                                        loadList={this.handleLoadList}
+                                    />}
                                 </>
                             }
 

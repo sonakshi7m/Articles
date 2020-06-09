@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { history } from '../../helpers';
 import cx from 'classnames';
+import moment from 'moment';
 
 import './GlobalFeeds.css'
 
@@ -66,7 +67,7 @@ export const GlobalFeeds = ({ articles, totalPages, loading, handleMarkAsFavClic
                         <Link to={`/profile/${article.author.username}`}><img alt="" src={article.author.image} /></Link>
                         <div className="info">
                             <Link to={`/profile/${article.author.username}`} className="author" href="">{article.author.username} </Link>
-                            <span className="date" >{article.createdAt}</span>
+                            <span className="date" >{moment(article.createdAt).format('MMMM, Do YYYY, hh:mm a')}</span>
                         </div>
                         {loggedinUser && getFavIcon(article.favorited, article.favoritesCount, article.slug, handleMarkAsFavClick, requesting)}
 

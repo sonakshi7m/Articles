@@ -234,7 +234,7 @@ function* followUser(action) {
     try {
         const profile = yield call(userService.followUser, action.payload);
         yield put({ type: userConstants.FOLLOW_USER_SUCCESS, payload: profile.data });
-        // yield put({ type: feedConstants.FETCH_PROFILE_REQUEST, payload: action.payload.username });
+        yield put({ type: feedConstants.FETCH_PROFILE_REQUEST, payload: action.payload.username });
 
     } catch (e) {
         console.log(e.response);

@@ -137,11 +137,11 @@ class HomePage extends Component {
                             <div label="Global Feeds">
                                 <GlobalFeeds articles={globalFeeds} handleMarkAsFavClick={this.onMarkAsFavClick} loggedinUser={loggedinUser} requesting={requesting} />
 
-                                <Pagination
+                                {totalCount > 10 && <Pagination
                                     totalNumberOfItem={totalCount}
                                     dataLimit={this.state.limit}
                                     loadList={this.handleLoadList}
-                                />
+                                />}
 
                             </div>
 
@@ -152,11 +152,11 @@ class HomePage extends Component {
                                 {userFeeds.length > 0 && !userFeedsLoading &&
                                     <>
                                         <GlobalFeeds articles={userFeeds} feedsLoading={userFeedsLoading} loggedinUser={loggedinUser} />
-                                        <Pagination
+                                        {totalCount > 10 && <Pagination
                                             totalNumberOfItem={totalCount}
                                             dataLimit={this.state.limit}
                                             loadList={this.handleLoadList}
-                                        />
+                                        />}
 
                                     </>
                                 }
@@ -181,11 +181,11 @@ class HomePage extends Component {
                         <div label="Global Feeds">
                             <GlobalFeeds articles={globalFeeds} loggedinUser={loggedinUser} />
 
-                            <Pagination
+                            {totalCount > 10 && <Pagination
                                 totalNumberOfItem={totalCount}
                                 dataLimit={this.state.limit}
                                 loadList={this.handleLoadList}
-                            />
+                            />}
 
                         </div>
 
